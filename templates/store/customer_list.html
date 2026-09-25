@@ -1,0 +1,81 @@
+{% extends 'store/base.html' %}
+{% block title %}Customers — FreshMart{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-1">
+  <div>
+    <div class="page-title">👤 Customers</div>
+    <div class="page-sub">All registered customers</div>
+  </div>
+  <a href="{% url 'store:customer_add' %}" class="btn-green btn">
+    <i class="bi bi-plus-lg"></i> Add Customer
+  </a>
+</div>
+
+{% if customers %}
+<div class="card">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      <i class="bi bi-people me-2"></i>Customer List
+    </h6>
+  </div>
+  <div class="card-body p-0">
+    <table class="table mb-0">
+      <thead>
+        <tr style="background:#faf8f4;">
+          <th style="padding:12px 16px;">#</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Joined</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+        <tr>
+          <td style="padding:12px 16px;color:#6b7c6e;">{{ forloop.counter }}</td>
+          <td><strong>{{ customer.name }}</strong></td>
+          <td>{{ customer.phone|default:"—" }}</td>
+          <td>{{ customer.email|default:"—" }}</td>
+          <td>{{ customer.address|default:"—" }}</td>
+          <td style="font-size:13px;color:#6b7c6e;">
+            {{ customer.created_at|date:"d M Y" }}
+          </td>
+          <td>
+            <!-- Edit -->
+            <a href="{% url 'store:customer_update' customer.pk %}"
+               class="btn btn-sm btn-outline-secondary me-1">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <!-- Delete -->
+            <a href="{% url 'store:customer_delete' customer.pk %}"
+               style="color:#e74c3c;border:1.5px solid #e74c3c;padding:4px 10px;
+                      border-radius:6px;font-size:12px;text-decoration:none;">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% else %}
+<div class="card p-5 text-center" style="border:2px dashed #dde8e0;">
+  <div style="font-size:48px;margin-bottom:12px;">👤</div>
+  <h5 style="font-family:'Syne',sans-serif;font-weight:700;">No customers yet</h5>
+  <p style="color:#6b7c6e;font-size:14px;margin-bottom:20px;">
+    Add your first customer to track their purchases
+  </p>
+  <a href="{% url 'store:customer_add' %}" class="btn-green btn"
+     style="width:fit-content;margin:0 auto;">
+    <i class="bi bi-plus-lg"></i> Add First Customer
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}

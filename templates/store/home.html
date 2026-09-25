@@ -1,0 +1,60 @@
+{% extends 'store/base.html' %}
+{% block title %}Home — FreshMart{% endblock %}
+
+{% block content %}
+
+<div class="page-title">🛒 All Categories</div>
+<div class="page-sub">Select a category to view its products</div>
+
+<!-- Action buttons -->
+<div class="d-flex gap-2 mb-4">
+  <a href="{% url 'store:category_add' %}" class="btn-green btn"><i class="bi bi-plus-lg"></i> Add Category</a>
+  <a href="{% url 'store:product_add' %}" class="btn-outline-green"><i class="bi bi-plus-lg"></i> Add Product</a>
+  <a href="{% url 'store:variant_add' %}" class="btn-outline-green"><i class="bi bi-plus-lg"></i> Add Variant</a>
+  <a href="{% url 'store:sales_add' %}" class="btn-outline-green"><i class="bi bi-cart-plus"></i> Record Sale</a>
+</div>
+
+<!-- Categories Grid -->
+{% if categories %}
+<div class="row g-3">
+  {% for category in categories %}
+  <div class="col-md-3 col-sm-6">
+    <a href="{% url 'store:category_detail' category.pk %}" class="text-decoration-none">
+      <div class="card p-4 h-100 text-center" style="transition: transform .2s, box-shadow .2s; cursor:pointer;"
+           onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 24px rgba(30,107,58,0.12)'"
+           onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="width:56px;height:56px;background:#e8f5ee;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px;">
+          {% if category.name == 'Dairy' %}🥛
+          {% elif category.name == 'Snacks' %}🍿
+          {% elif category.name == 'Beverages' %}🥤
+          {% elif category.name == 'Fruits' %}🍎
+          {% elif category.name == 'Vegetables' %}🥦
+          {% elif category.name == 'Bakery' %}🍞
+          {% elif category.name == 'Grains' or category.name == 'Grains & Pulses' %}🌾
+          {% elif category.name == 'Meat' or category.name == 'Meat & Seafood' %}🥩
+          {% elif category.name == 'Frozen Foods' %}🧊
+          {% elif category.name == 'Spices' or category.name == 'Spices & Masala' %}🌶️
+          {% else %}📦
+          {% endif %}
+        </div>
+        <h6 style="font-family:'Syne',sans-serif;font-weight:700;color:#111a14;margin-bottom:6px;">{{ category.name }}</h6>
+        <div style="font-size:12px;color:#6b7c6e;">Click to view products</div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<!-- Empty state -->
+<div class="card p-5 text-center" style="border: 2px dashed #dde8e0;">
+  <div style="font-size:48px;margin-bottom:12px;">📦</div>
+  <h5 style="font-family:'Syne',sans-serif;font-weight:700;">No categories yet</h5>
+  <p style="color:#6b7c6e;font-size:14px;margin-bottom:20px;">Start by adding your first category like Dairy, Snacks or Beverages</p>
+  <a href="{% url 'store:category_add' %}" class="btn-green btn" style="display:inline-block;width:fit-content;margin:0 auto;">
+    <i class="bi bi-plus-lg"></i> Add First Category
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}

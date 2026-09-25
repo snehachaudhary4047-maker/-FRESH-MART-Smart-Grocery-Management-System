@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bill #{{ bill_no }} — FreshMart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+ <style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #0b1220, #102a43, #1d4ed8, #0ea5e9);
+    background-size: 300% 300%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 16px;
+    animation: gradientShift 14s ease infinite;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ===== Floating background glow blobs ===== */
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35;
+  }
+
+  body::before {
+    width: 280px;
+    height: 280px;
+    background: #3b82f6;
+    top: 8%;
+    left: 6%;
+    animation: floatBlob 9s ease-in-out infinite;
+  }
+
+  body::after {
+    width: 340px;
+    height: 340px;
+    background: #38bdf8;
+    bottom: 8%;
+    right: 6%;
+    animation: floatBlob 11s ease-in-out infinite reverse;
+  }
+
+  /* =========================
+     KEYFRAMES
+  ========================== */
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes fadeInBody {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes slideUpCard {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes fadeDown {
+    from {
+      opacity: 0;
+      transform: translateY(-18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-22px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeRight {
+    from {
+      opacity: 0;
+      transform: translateX(22px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes rowReveal {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+    }
+    50% {
+      box-shadow: 0 0 22px rgba(59, 130, 246, 0.22);
+    }
+  }
+
+  @keyframes popIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    70% {
+      opacity: 1;
+      transform: scale(1.03);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes shine {
+    0%   { transform: translateX(-130%) skewX(-20deg); }
+    100% { transform: translateX(240%) skewX(-20deg); }
+  }
+
+  @keyframes floatBlob {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(18px, -18px) scale(1.06);
+    }
+  }
+
+  @keyframes borderGlow {
+    0%, 100% {
+      box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+    }
+    50% {
+      box-shadow: 0 22px 60px rgba(37, 99, 235, 0.18);
+    }
+  }
+
+  /* ── Action Buttons ── */
+  .action-bar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    width: 100%;
+    max-width: 700px;
+    flex-wrap: wrap;
+    animation: fadeDown 0.7s ease;
+  }
+
+  .btn-print,
+  .btn-link {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    padding: 11px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .btn-print {
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    color: #fff;
+    border: none;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.28);
+  }
+
+  .btn-link {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1e3a8a;
+    border: 1.5px solid rgba(191, 219, 254, 0.9);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  }
+
+  .btn-print::after,
+  .btn-link::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 38%;
+    height: 100%;
+    background: rgba(255,255,255,0.28);
+    transform: skewX(-20deg);
+  }
+
+  .btn-print:hover::after,
+  .btn-link:hover::after {
+    animation: shine 0.8s ease;
+  }
+
+  .btn-print:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.36);
+  }
+
+  .btn-link:hover {
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #93c5fd;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 24px rgba(30, 64, 175, 0.14);
+  }
+
+  /* ── Bill Card ── */
+  .bill {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.96);
+    width: 100%;
+    max-width: 700px;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    animation: slideUpCard 0.9s cubic-bezier(0.22, 1, 0.36, 1), borderGlow 5s ease-in-out infinite;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.20);
+  }
+
+  .bill:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 26px 70px rgba(0,0,0,0.24);
+  }
+
+  /* ── Header ── */
+  .bill-header {
+    background: linear-gradient(135deg, #1e3a8a, #2563eb, #0ea5e9);
+    background-size: 200% 200%;
+    padding: 30px 38px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: gradientShift 10s ease infinite;
+  }
+
+  .bill-header::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 120%;
+    height: 220%;
+    background: radial-gradient(circle, rgba(255,255,255,0.10), transparent 60%);
+    animation: pulseGlow 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .bill-header::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 40%;
+    height: 100%;
+    background: rgba(255,255,255,0.12);
+    transform: skewX(-20deg);
+    animation: shine 3.5s linear infinite;
+  }
+
+  .bill-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+    animation: popIn 0.8s ease;
+  }
+
+  .bill-header h1 span {
+    color: #dbeafe;
+  }
+
+  .bill-header p {
+    color: rgba(255,255,255,0.84);
+    font-size: 13px;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Bill Number Banner ── */
+  .bill-banner {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    padding: 12px 38px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #93c5fd;
+    animation: fadeDown 0.8s ease;
+  }
+
+  .bill-banner span {
+    font-size: 13px;
+    color: #1e40af;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .bill-banner .date {
+    font-weight: 500;
+    color: #475569;
+  }
+
+  /* ── Customer Info ── */
+  .bill-info {
+    padding: 22px 38px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    background: #f8fbff;
+    border-bottom: 1px dashed #dbeafe;
+  }
+
+  .info-col {
+    flex: 1;
+    animation: fadeLeft 0.9s ease;
+  }
+
+  .info-col.right {
+    text-align: right;
+    animation: fadeRight 0.9s ease;
+  }
+
+  .info-col p {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    margin-bottom: 4px;
+    margin-top: 10px;
+  }
+
+  .info-col p:first-child {
+    margin-top: 0;
+  }
+
+  .info-col strong {
+    font-size: 14px;
+    color: #0f172a;
+    display: block;
+    transition: color .25s ease;
+  }
+
+  .info-col strong:hover {
+    color: #2563eb;
+  }
+
+  /* ── Items Table ── */
+  .bill-body {
+    padding: 26px 38px;
+    background: #ffffff;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead tr {
+    border-bottom: 2px solid #dbeafe;
+  }
+
+  th {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    padding: 0 0 12px;
+    text-align: left;
+  }
+
+  th.right, td.right { text-align: right; }
+  th.center, td.center { text-align: center; }
+
+  td {
+    padding: 14px 0;
+    font-size: 14px;
+    border-bottom: 1px solid #eff6ff;
+    color: #0f172a;
+    vertical-align: middle;
+    transition: background .25s ease, transform .25s ease, color .25s ease;
+  }
+
+  tbody tr {
+    animation: rowReveal 0.6s ease both;
+  }
+
+  tbody tr:nth-child(1) { animation-delay: 0.10s; }
+  tbody tr:nth-child(2) { animation-delay: 0.18s; }
+  tbody tr:nth-child(3) { animation-delay: 0.26s; }
+  tbody tr:nth-child(4) { animation-delay: 0.34s; }
+  tbody tr:nth-child(5) { animation-delay: 0.42s; }
+  tbody tr:nth-child(6) { animation-delay: 0.50s; }
+  tbody tr:nth-child(7) { animation-delay: 0.58s; }
+  tbody tr:nth-child(8) { animation-delay: 0.66s; }
+  tbody tr:nth-child(9) { animation-delay: 0.74s; }
+  tbody tr:nth-child(10){ animation-delay: 0.82s; }
+
+  tbody tr:hover td {
+    background: #f8fbff;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .item-name {
+    font-weight: 600;
+    margin-bottom: 3px;
+    transition: color .25s ease;
+  }
+
+  tbody tr:hover .item-name {
+    color: #2563eb;
+  }
+
+  .item-sub {
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  /* ── Totals ── */
+  .bill-totals {
+    padding: 0 38px 26px;
+    background: #ffffff;
+    animation: fadeUpTotals 1s ease;
+  }
+
+  @keyframes fadeUpTotals {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .divider {
+    border: none;
+    border-top: 2px dashed #bfdbfe;
+    margin: 16px 0;
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    font-size: 14px;
+    color: #334155;
+    transition: transform .22s ease;
+  }
+
+  .total-row:hover {
+    transform: translateX(3px);
+  }
+
+  .total-row .label {
+    color: #64748b;
+  }
+
+  .total-row.discount {
+    color: #dc2626;
+    font-weight: 600;
+  }
+
+  .total-row.final {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #1d4ed8;
+    border-top: 2px solid #2563eb;
+    padding-top: 16px;
+    margin-top: 10px;
+    animation: popIn 0.9s ease;
+  }
+
+  /* ── Payment ── */
+  .bill-payment {
+    padding: 15px 38px;
+    background: linear-gradient(135deg, #f8fbff, #eff6ff);
+    border-top: 1px solid #dbeafe;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeDown 1s ease;
+  }
+
+  .bill-payment span {
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .payment-badge {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #93c5fd;
+    animation: pulseGlow 2.6s infinite ease-in-out;
+  }
+
+  /* ── Footer ── */
+  .bill-footer {
+    padding: 22px 38px;
+    text-align: center;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb, #0ea5e9);
+    background-size: 200% 200%;
+    animation: gradientShift 12s ease infinite;
+  }
+
+  .bill-footer p {
+    color: rgba(255,255,255,0.88);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .bill-footer strong {
+    color: #dbeafe;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .bill-header,
+    .bill-banner,
+    .bill-info,
+    .bill-body,
+    .bill-totals,
+    .bill-payment,
+    .bill-footer {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .bill-info {
+      flex-direction: column;
+    }
+
+    .info-col.right {
+      text-align: left;
+    }
+
+    th, td {
+      font-size: 12px;
+    }
+
+    .total-row.final {
+      font-size: 18px;
+    }
+
+    .bill-header h1 {
+      font-size: 26px;
+    }
+  }
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    body {
+      background: #fff !important;
+      padding: 0;
+      animation: none !important;
+    }
+
+    body::before,
+    body::after {
+      display: none !important;
+    }
+
+    .action-bar {
+      display: none !important;
+    }
+
+    .bill {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      max-width: 100%;
+      width: 100%;
+      transform: none !important;
+      animation: none !important;
+      border: none !important;
+      backdrop-filter: none !important;
+    }
+
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .bill-header,
+    .bill-footer,
+    .bill-banner,
+    .bill-payment {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ── Action Buttons — hidden on print ── -->
+  <div class="action-bar">
+    <button onclick="window.print()" class="btn-print">
+      🖨️ Print Bill
+    </button>
+    <a href="{% url 'store:bill_create' %}" class="btn-link">
+      ➕ New Bill
+    </a>
+    <a href="{% url 'store:sales_list' %}" class="btn-link">
+      📊 Sales & Profit
+    </a>
+    <a href="{% url 'store:home' %}" class="btn-link">
+      🏠 Home
+    </a>
+  </div>
+
+  <!-- ── Bill ── -->
+  <div class="bill">
+
+    <!-- Header -->
+    <div class="bill-header">
+      <h1>FRESH<span>MART</span></h1>
+      <p>Dwarahat (Uttarakhand)</p>
+      <p>📞 9876543210 &nbsp;|&nbsp; GST No: XXXXXXXXXXXX</p>
+    </div>
+
+    <!-- Bill Number -->
+    <div class="bill-banner">
+      <span>🧾 Bill No: #{{ bill_no }}</span>
+      <span class="date">
+        {% if sales %}
+          {{ sales.0.sold_at|date:"d M Y, h:i A" }}
+        {% endif %}
+      </span>
+    </div>
+
+    <!-- Customer Info -->
+    <div class="bill-info">
+      <div class="info-col">
+        <p>Customer</p>
+        <strong>
+          {% if customer %}
+            {{ customer.name }}
+          {% else %}
+            Walk-in Customer
+          {% endif %}
+        </strong>
+
+        {% if customer.phone %}
+        <p>Phone</p>
+        <strong>{{ customer.phone }}</strong>
+        {% endif %}
+
+        {% if customer.email %}
+        <p>Email</p>
+        <strong>{{ customer.email }}</strong>
+        {% endif %}
+
+        {% if customer.address %}
+        <p>Address</p>
+        <strong>{{ customer.address }}</strong>
+        {% endif %}
+      </div>
+
+      <div class="info-col right">
+        <p>Total Items</p>
+        <strong>{{ sales.count }} item(s)</strong>
+
+        <p>Bill Date</p>
+        <strong>
+          {% if sales %}
+            {{ sales.0.sold_at|date:"d M Y" }}
+          {% endif %}
+        </strong>
+
+        <p>Status</p>
+        <strong style="color:#1e6b3a;">✅ Completed</strong>
+      </div>
+    </div>
+
+    <!-- Items Table -->
+    <div class="bill-body">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:5%">#</th>
+            <th style="width:35%">Product</th>
+            <th class="center" style="width:15%">Qty</th>
+            <th class="right" style="width:20%">Unit Price</th>
+            <th class="right" style="width:25%">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sale in sales %}
+          <tr>
+            <td style="color:#6b7c6e;">{{ forloop.counter }}</td>
+            <td>
+              <div class="item-name">{{ sale.variant.product.prod_name }}</div>
+              <div class="item-sub">
+                {% if sale.variant.brand %}{{ sale.variant.brand }}{% endif %}
+                {% if sale.variant.variant_type %} — {{ sale.variant.variant_type }}{% endif %}
+                — {{ sale.variant.quantity }}{{ sale.variant.unit }}
+              </div>
+            </td>
+            <td class="center">{{ sale.sell_quantity }}</td>
+            <td class="right">₹{{ sale.sale_price }}</td>
+            <td class="right"><strong>₹{{ sale.revenue }}</strong></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Totals -->
+    {% if profit %}
+    <div class="bill-totals">
+      <hr class="divider"/>
+      <div class="total-row">
+        <span class="label">Subtotal</span>
+        <span>₹{{ profit.total_revenue }}</span>
+      </div>
+      <div class="total-row">
+        <span class="label">Cost (internal)</span>
+        <span style="color:#6b7c6e;">₹{{ profit.total_cost }}</span>
+      </div>
+      {% if profit.discount > 0 %}
+      <div class="total-row discount">
+        <span class="label">Discount</span>
+        <span>₹{{ profit.discount }}</span>
+      </div>
+      {% endif %}
+      <div class="total-row final">
+        <span>Total Amount</span>
+        <span>₹{{ profit.amount_to_pay }}</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Payment -->
+    <div class="bill-payment">
+      <span>Payment Method</span>
+      <span class="payment-badge">✅ Cash</span>
+    </div>
+
+    <!-- Footer -->
+    <div class="bill-footer">
+      <p><strong>Thank you for shopping at Fresh Mart 🙏</strong></p>
+      <p>Visit again — we appreciate your business!</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

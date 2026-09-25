@@ -1,0 +1,231 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ category.name }} — FreshMart{% endblock %}
+{% block content %}
+
+<!-- Header -->
+<div class="d-flex align-items-center gap-3 mb-2">
+  <a href="{% url 'store:home' %}" style="color:#6b7c6e;text-decoration:none;font-size:14px;">
+    <i class="bi bi-arrow-left"></i> Back
+  </a>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-1">
+  <div class="page-title">{{ category.name }}</div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'store:category_update' category.pk %}"
+       class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-pencil"></i> Edit Category
+    </a>
+    <a href="{% url 'store:category_delete' category.pk %}"
+       style="color:#e74c3c;border:1.5px solid #e74c3c;padding:5px 12px;
+              border-radius:6px;font-size:13px;text-decoration:none;">
+      <i class="bi bi-trash"></i> Delete Category
+    </a>
+  </div>
+</div>
+<div class="page-sub">All products in this category</div>
+
+<!-- ✅ Search Bar -->
+<form method="GET" class="mb-4 mt-3">
+  <div class="d-flex gap-2" style="max-width:360px;">
+    <input type="text"
+           name="search"
+           value="{{ search|default:'' }}"
+           class="form-control"
+           placeholder="Search product, brand, variant type..."/>
+    <button type="submit" class="btn-green btn">
+      <i class="bi bi-search"></i> Search variants
+    </button>
+    {% if search %}
+    <a href="{% url 'store:category_detail' category.pk %}"
+       class="btn btn-outline-secondary">
+      <i class="bi bi-x"></i>
+    </a>
+    {% endif %}
+  </div>
+</form>
+
+<!-- ✅ Search Results -->
+{% if search %}
+<div class="alert-green mb-3" style="font-size:13px;">
+  <i class="bi bi-search"></i>
+  Results for <strong>"{{ search }}"</strong> — {{ variants.count }} found
+</div>
+
+{% if variants %}
+<div class="card mb-4">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      <i class="bi bi-search me-2"></i>Search Results
+    </h6>
+  </div>
+  <div class="card-body p-0">
+    <table class="table mb-0">
+      <thead>
+        <tr style="background:#faf8f4;">
+          <th style="padding:12px 16px;">Product</th>
+          <th>Brand</th>
+          <th>Type</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for variant in variants %}
+        <tr>
+          <td style="padding:12px 16px;">
+            <strong>{{ variant.product.prod_name }}</strong>
+          </td>
+          <td>{{ variant.brand|default:"—" }}</td>
+          <td>{{ variant.variant_type|default:"—" }}</td>
+          <td><strong>{{ variant.quantity }}{{ variant.unit }}</strong></td>
+          <td><strong style="color:#1e6b3a;">₹{{ variant.price }}</strong></td>
+          <td>
+            {% if variant.is_out_of_stock %}
+              <span class="badge-red"><i class="bi bi-x-circle"></i> Out of Stock</span>
+            {% elif variant.is_low_stock %}
+              <span class="badge-amber"><i class="bi bi-exclamation-triangle"></i> Low ({{ variant.stock }})</span>
+            {% else %}
+              <span class="badge-green"><i class="bi bi-check-circle"></i> {{ variant.stock }}</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'store:variant_update' variant.pk %}"
+               class="btn btn-sm btn-outline-secondary me-1">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{% url 'store:variant_delete' variant.pk %}"
+               style="color:#e74c3c;border:1.5px solid #e74c3c;padding:4px 10px;
+                      border-radius:6px;font-size:12px;text-decoration:none;">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% else %}
+<div class="card p-4 text-center mb-4" style="border:2px dashed #dde8e0;">
+  <div style="font-size:36px;margin-bottom:8px;">🔍</div>
+  <h6 style="font-family:'Syne',sans-serif;font-weight:700;">
+    No results for "{{ search }}"
+  </h6>
+  <p style="color:#6b7c6e;font-size:13px;margin-bottom:0;">
+    Try searching by product name, brand or variant type
+  </p>
+</div>
+{% endif %}
+
+{% else %}
+
+<!-- ── Normal Products View (no search) ── -->
+{% if products %}
+<div class="row g-4">
+  {% for product in products %}
+  <div class="col-md-6">
+    <div class="card">
+
+      <div class="card-header-green d-flex justify-content-between align-items-center">
+        <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+          <i class="bi bi-box-seam me-2"></i>{{ product.prod_name }}
+        </h6>
+        <div class="d-flex gap-2">
+          <a href="{% url 'store:product_update' product.pk %}"
+             style="color:#fff;border:1px solid rgba(255,255,255,0.4);
+                    padding:3px 10px;border-radius:6px;font-size:12px;text-decoration:none;">
+            <i class="bi bi-pencil"></i> Edit
+          </a>
+          <a href="{% url 'store:product_delete' product.pk %}"
+             style="color:#fff;border:1px solid rgba(255,100,100,0.5);
+                    background:rgba(231,76,60,0.3);
+                    padding:3px 10px;border-radius:6px;font-size:12px;text-decoration:none;">
+            <i class="bi bi-trash"></i> Delete
+          </a>
+        </div>
+      </div>
+
+      <div class="card-body p-0">
+        {% if product.variants.all %}
+        <table class="table mb-0">
+          <thead>
+            <tr style="background:#faf8f4;">
+              <th style="padding:12px 16px;">Brand</th>
+              <th>Type</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for variant in product.variants.all %}
+            <tr>
+              <td>{{ variant.brand|default:"—" }}</td>
+              <td>{{ variant.variant_type|default:"—" }}</td>
+              <td><strong>{{ variant.quantity }}{{ variant.unit }}</strong></td>
+              <td><strong style="color:#1e6b3a;">₹{{ variant.price }}</strong></td>
+              <td>
+                {% if variant.is_out_of_stock %}
+                  <span class="badge-red"><i class="bi bi-x-circle"></i> Out of Stock</span>
+                {% elif variant.is_low_stock %}
+                  <span class="badge-amber"><i class="bi bi-exclamation-triangle"></i> Low ({{ variant.stock }})</span>
+                {% else %}
+                  <span class="badge-green"><i class="bi bi-check-circle"></i> {{ variant.stock }}</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'store:variant_update' variant.pk %}"
+                   class="btn btn-sm btn-outline-secondary me-1">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'store:variant_delete' variant.pk %}"
+                   style="color:#e74c3c;border:1.5px solid #e74c3c;padding:4px 10px;
+                          border-radius:6px;font-size:12px;text-decoration:none;">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="p-4 text-center" style="color:#6b7c6e;font-size:14px;">
+          <i class="bi bi-layers" style="font-size:24px;display:block;margin-bottom:8px;"></i>
+          No variants added yet
+          <br>
+          <a href="{% url 'store:variant_add' %}" style="color:#1e6b3a;font-weight:500;">
+            Add variant
+          </a>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="card p-5 text-center" style="border:2px dashed #dde8e0;">
+  <div style="font-size:48px;margin-bottom:12px;">📭</div>
+  <h5 style="font-family:'Syne',sans-serif;font-weight:700;">
+    No products in {{ category.name }}
+  </h5>
+  <p style="color:#6b7c6e;font-size:14px;margin-bottom:20px;">
+    Add your first product to this category
+  </p>
+  <a href="{% url 'store:product_add' %}" class="btn-green btn"
+     style="width:fit-content;margin:0 auto;">
+    <i class="bi bi-plus-lg"></i> Add Product
+  </a>
+</div>
+{% endif %}
+
+{% endif %}
+
+{% endblock %}

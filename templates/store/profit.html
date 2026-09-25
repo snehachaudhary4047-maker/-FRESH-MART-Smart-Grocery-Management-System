@@ -1,0 +1,131 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Sales Records — FreshMart{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-1">
+  <div>
+    <div class="page-title">💰 Profit Corner</div>
+    <div class="page-sub">Auto-calculated profit from every bill</div>
+  </div>
+  <a href="{% url 'store:bill_create' %}" class="btn-green btn">
+    <i class="bi bi-receipt"></i> New Bill
+  </a>
+    <a href="{% url 'store:profit_total_delete' %}" class="btn-green btn">
+    <i class="bi bi-receipt"></i> DELETE TOTAL PROFIT
+  </a>
+</div>
+{% if profits %}
+<div class="card mb-4">
+  <div class="card-header-green d-flex justify-content-between align-items-center">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      <i class="bi bi-graph-up me-2"></i>💰 Profit Corner — Per Bill
+    </h6>
+  </div>
+  <div class="card-body p-0">
+    <table class="table mb-0">
+      <thead>
+        <tr style="background:#faf8f4;">
+          <th style="padding:12px 16px;">Bill No</th>
+          <th>Customer</th>
+          <th>Revenue</th>
+          <th>Cost</th>
+          <th>Discount</th>
+          <th>Net Profit</th>
+          <th>Date</th>
+          <th>Print</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in profits %}
+        <tr>
+          <td style="padding:12px 16px;">
+            <a href="{% url 'store:bill_print' p.bill_no %}"
+               style="color:#1e6b3a;font-weight:700;text-decoration:none;
+                      font-family:'Syne',sans-serif;font-size:15px;">
+              #{{ p.bill_no }}
+            </a>
+          </td>
+          <td>
+            {% if p.customer %}
+              <strong>{{ p.customer.name }}</strong>
+              {% if p.customer.phone %}
+              <div style="font-size:12px;color:#6b7c6e;">{{ p.customer.phone }}</div>
+              {% endif %}
+            {% else %}
+              <span style="color:#6b7c6e;font-style:italic;">Walk-in</span>
+            {% endif %}
+
+        </p>
+        <td><strong style="color:#1e6b3a;">₹{{ p.total_revenue }}</strong></td>
+          <td><span style="color:#e74c3c;">₹{{ p.total_cost }}</span></td>
+          <td>
+            {% if p.discount > 0 %}
+              <span class="badge-amber">— ₹{{ p.discount }}</span>
+            {% else %}
+              <span style="color:#6b7c6e;">—</span>
+            {% endif %}
+          </td>
+
+
+          <td>
+            {% if p.total_profit > 0 %}
+              <span style="background:#fff3e0;color:#e8a020;padding:5px 14px;
+                           border-radius:20px;font-weight:700;font-size:13px;
+                           font-family:'Syne',sans-serif;">
+                ₹{{ p.total_profit }}
+              </span>
+            {% else %}
+              <span style="background:#fdecea;color:#e74c3c;padding:5px 14px;
+                           border-radius:20px;font-weight:700;font-size:13px;">
+                ₹{{ p.total_profit }}
+              </span>
+            {% endif %}
+          </td>
+          <td style="font-size:13px;color:#6b7c6e;">{{ p.date|date:"d M Y" }}</td>
+          <td>
+            <a href="{% url 'store:bill_print' p.bill_no %}"
+               style="color:#1e6b3a;border:1.5px solid #1e6b3a;
+                      padding:4px 10px;border-radius:6px;
+                      font-size:12px;text-decoration:none;">
+              <i class="bi bi-printer"></i> Print
+            </a>
+          </td>
+             <td>
+            <a href="{% url 'store:profit_delete' p.pk %}"
+               style="color:#e74c3c;border:1.5px solid #e74c3c;
+                      padding:4px 10px;border-radius:6px;
+                      font-size:12px;text-decoration:none;">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+       <tfoot>
+        <tr style="background:#f0f9f3;font-weight:700;">
+          <td colspan="2" style="padding:12px 16px;text-align:right;
+                                  font-family:'Syne',sans-serif;font-size:14px;">
+            TOTAL
+          </td>
+          <td style="color:#1e6b3a;font-size:15px;">₹{{ p_total_revenue }}</td>
+          <td style="color:#e74c3c;font-size:15px;">₹{{ p_total_cost }}</td>
+          <td></td>
+          <td>
+            <span style="background:#fff3e0;color:#e8a020;padding:6px 16px;
+                         border-radius:20px;font-weight:800;font-size:14px;
+                         font-family:'Syne',sans-serif;">
+              ₹{{ p_total_profit }}
+            </span>
+          </td>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

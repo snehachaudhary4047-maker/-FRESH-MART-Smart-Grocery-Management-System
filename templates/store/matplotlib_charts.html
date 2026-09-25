@@ -1,0 +1,146 @@
+{% extends 'store/base.html' %}
+{% block title %}Profit Charts — FreshMart{% endblock %}
+
+{% block content %}
+
+<div class="page-title">📊 Profit Analytics</div>
+<div class="page-sub">Matplotlib charts — which product gives maximum profit per month</div>
+
+<!-- Chart 1 — Max Profit Per Month -->
+{% if chart1 %}
+<div class="card mb-4">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      <i class="bi bi-bar-chart me-2"></i>
+      Most Profitable Product — Per Month
+    </h6>
+  </div>
+  <div class="card-body text-center p-3">
+    <img src="data:image/png;base64,{{ chart1 }}"
+         style="max-width:100%;border-radius:12px;" alt="Chart 1"/>
+  </div>
+</div>
+{% endif %}
+
+<!-- Chart 2 + Chart 4 side by side -->
+<div class="row g-4 mb-4">
+
+  {% if chart2 %}
+  <div class="col-md-7">
+    <div class="card h-100">
+      <div class="card-header-green">
+        <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+          <i class="bi bi-trophy me-2"></i>Top Products by Total Profit
+        </h6>
+      </div>
+      <div class="card-body text-center p-3">
+        <img src="data:image/png;base64,{{ chart2 }}"
+             style="max-width:100%;border-radius:12px;" alt="Chart 2"/>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if chart4 %}
+  <div class="col-md-5">
+    <div class="card h-100">
+      <div class="card-header-green">
+        <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+          <i class="bi bi-pie-chart me-2"></i>Profit by Category
+        </h6>
+      </div>
+      <div class="card-body text-center p-3">
+        <img src="data:image/png;base64,{{ chart4 }}"
+             style="max-width:100%;border-radius:12px;" alt="Chart 4"/>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- Chart 3 — Monthly Trend -->
+{% if chart3 %}
+<div class="card mb-4">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      <i class="bi bi-graph-up me-2"></i>Monthly Revenue vs Profit Trend
+    </h6>
+  </div>
+  <div class="card-body text-center p-3">
+    <img src="data:image/png;base64,{{ chart3 }}"
+         style="max-width:100%;border-radius:12px;" alt="Chart 3"/>
+  </div>
+</div>
+{% endif %}
+
+<!-- Detail Table -->
+<div class="card">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      <i class="bi bi-table me-2"></i>Monthly Profit Per Product — Detail
+    </h6>
+  </div>
+  <div class="card-body p-0">
+    <table class="table mb-0">
+      <thead>
+        <tr style="background:#f0f5ff;">
+          <th style="padding:12px 16px;">Month</th>
+          <th>Product</th>
+          <th>Brand</th>
+          <th>Qty Sold</th>
+          <th>Revenue</th>
+          <th>Profit</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data %}
+        <tr>
+          <td style="padding:12px 16px;font-weight:600;color:var(--blue);">
+            {{ row.month|date:"M Y" }}
+          </td>
+          <td><strong>{{ row.variant__product__prod_name }}</strong></td>
+          <td>{{ row.variant__brand|default:"—" }}</td>
+          <td><span class="badge-green">{{ row.total_qty }}</span></td>
+          <td style="color:var(--blue);font-weight:600;">
+            ₹{{ row.total_revenue }}
+          </td>
+          <td>
+            <span style="background:#fffbeb;color:#b45309;
+                         padding:4px 12px;border-radius:20px;
+                         font-weight:700;font-size:13px;">
+              ₹{{ row.total_profit }}
+            </span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6"
+              style="text-align:center;padding:32px;color:#64748b;">
+            No sales data yet — generate bills to see charts
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- No data message -->
+{% if not chart1 and not chart2 and not chart3 and not chart4 %}
+<div class="card p-5 text-center" style="border:2px dashed #dde8e0;">
+  <div style="font-size:56px;margin-bottom:16px;">📊</div>
+  <h5 style="font-family:'Syne',sans-serif;font-weight:700;">
+    No data to visualize yet
+  </h5>
+  <p style="color:#64748b;font-size:14px;margin-bottom:24px;">
+    Generate bills and record sales to see profit charts
+  </p>
+  <a href="{% url 'store:bill_create' %}" class="btn-green btn"
+     style="width:fit-content;margin:0 auto;">
+    <i class="bi bi-receipt"></i> Generate First Bill
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}

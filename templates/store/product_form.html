@@ -1,0 +1,35 @@
+{% extends 'store/base.html' %}
+{% block title %}Add Product — FreshMart{% endblock %}
+{% block content %}
+
+<div class="d-flex align-items-center gap-3 mb-2">
+  <a href="{% url 'store:home' %}" style="color:#6b7c6e;text-decoration:none;font-size:14px;"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+<div class="page-title">Add Product</div>
+<div class="page-sub">Add a new product under a category</div>
+
+<div class="card p-4" style="max-width:480px;">
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label>Product Name</label>
+      {{ form.prod_name }}
+      {% if form.prod_name.errors %}
+        <div style="color:#c0392b;font-size:12px;margin-top:4px;">{{ form.prod_name.errors }}</div>
+      {% endif %}
+    </div>
+    <div class="mb-4">
+      <label>Category</label>
+      {{ form.category }}
+      {% if form.category.errors %}
+        <div style="color:#c0392b;font-size:12px;margin-top:4px;">{{ form.category.errors }}</div>
+      {% endif %}
+    </div>
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn-green btn"><i class="bi bi-check-lg"></i> Save Product</button>
+      <a href="{% url 'store:home' %}" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ action }} Customer — FreshMart{% endblock %}
+
+{% block content %}
+
+<div class="d-flex align-items-center gap-3 mb-2">
+  <a href="{% url 'store:customer_list' %}"
+     style="color:#6b7c6e;text-decoration:none;font-size:14px;">
+    <i class="bi bi-arrow-left"></i> Back
+  </a>
+</div>
+
+<div class="page-title">{{ action }} Customer</div>
+<div class="page-sub">
+  {% if action == 'Add' %}Register a new customer
+  {% else %}Update customer details{% endif %}
+</div>
+
+<div class="card p-4" style="max-width:500px;">
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label>Full Name</label>
+      {{ form.name }}
+      {% if form.name.errors %}
+        <div style="color:#c0392b;font-size:12px;margin-top:4px;">{{ form.name.errors }}</div>
+      {% endif %}
+    </div>
+    <div class="mb-3">
+      <label>Phone <span style="color:#9aac9d;font-weight:400;">(optional)</span></label>
+      {{ form.phone }}
+    </div>
+    <div class="mb-3">
+      <label>Email <span style="color:#9aac9d;font-weight:400;">(optional)</span></label>
+      {{ form.email }}
+    </div>
+    <div class="mb-4">
+      <label>Address <span style="color:#9aac9d;font-weight:400;">(optional)</span></label>
+      {{ form.address }}
+    </div>
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn-green btn">
+        <i class="bi bi-check-lg"></i> {{ action }} Customer
+      </button>
+      <a href="{% url 'store:customer_list' %}" class="btn btn-outline-secondary">
+        Cancel
+      </a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expired Corner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4fff4;
+            padding: 20px;
+        }
+        h1 {
+            color: #1b5e20;
+            margin-bottom: 10px;
+        }
+        .loss-box {
+            background: #e8f5e9;
+            border: 2px solid #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1b5e20;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th {
+            background: #2e7d32;
+            color: white;
+            padding: 12px;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background: #f1f8f1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>GroceryShop Expired Corner</h1>
+
+    <div class="loss-box">
+        Total Expired Loss: ₹{{ total_loss }}
+    </div>
+
+    {% if expired_items %}
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Brand</th>
+                <th>Variant</th>
+                <th>Quantity</th>
+                <th>Expired Stock</th>
+                <th>Cost Price</th>
+                <th>Total Loss</th>
+                <th>Expiry Date</th>
+                <th>Moved On</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in expired_items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.brand }}</td>
+                <td>{{ item.variant_type }}</td>
+                <td>{{ item.quantity }} {{ item.unit }}</td>
+                <td>{{ item.expired_stock }}</td>
+                <td>₹{{ item.cost_price }}</td>
+                <td>₹{{ item.total_loss }}</td>
+                <td>{{ item.expiry_date }}</td>
+                <td>{{ item.moved_on }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No expired items found.</p>
+    {% endif %}
+
+</body>
+</html>

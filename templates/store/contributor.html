@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributors | FreshMart</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg1: #f1f8e9;
+      --bg2: #e8f5e9;
+      --bg3: #dcedc8;
+      --primary: #2e7d32;
+      --primary-light: #43a047;
+      --accent: #66bb6a;
+      --text: #1b4332;
+      --muted: #5f7a66;
+      --white: rgba(255,255,255,0.82);
+      --border: rgba(46, 125, 50, 0.10);
+      --shadow: 0 12px 30px rgba(76, 175, 80, 0.12);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(76,175,80,0.08), transparent 20%),
+        radial-gradient(circle at 85% 18%, rgba(129,199,132,0.08), transparent 20%),
+        radial-gradient(circle at 75% 85%, rgba(67,160,71,0.08), transparent 22%),
+        linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+      background-size: 300% 300%;
+      animation: bgMove 12s ease infinite;
+      overflow-x: hidden;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .page-wrapper {
+      width: 100%;
+      max-width: 1300px;
+      margin: auto;
+      padding: 40px 20px 60px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: #1b5e20;
+    }
+
+    .brand span {
+      color: var(--primary-light);
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(135deg, #2e7d32, #43a047);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+      transition: 0.3s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 45px;
+      animation: fadeUp 0.8s ease;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 40px;
+      color: #1b5e20;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 700px;
+      margin: auto;
+      line-height: 1.7;
+    }
+
+    .contributors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 22px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      transition: 0.35s ease;
+      position: centre;
+      overflow: hidden;
+      animation: fadeUp 0.8s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: centre;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(76,175,80,0.06),
+        rgba(255,255,255,0.08)
+      );
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(76, 175, 80, 0.18);
+    }
+
+.photo-wrap {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  padding: 5px;
+  background: linear-gradient(135deg, #66bb6a, #2e7d32);
+  box-shadow: 0 10px 24px rgba(76,175,80,0.18);
+}
+
+.photo-wrap img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 4px solid white;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .photo-wrap img {
+  transform: scale(1.05);
+}
+
+    .role {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 14px;
+    }
+
+    .bio {
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 18px;
+      min-height: 68px;
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .tag {
+      background: rgba(76, 175, 80, 0.10);
+      color: #2e7d32;
+      border: 1px solid rgba(76, 175, 80, 0.12);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .socials a {
+      text-decoration: none;
+      background: rgba(255,255,255,0.8);
+      color: var(--primary);
+      border: 1px solid rgba(76,175,80,0.12);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: 0.3s ease;
+    }
+
+    .socials a:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 45px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .brand {
+        font-size: 26px;
+      }
+
+      .back-btn {
+        padding: 10px 14px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="brand">Fresh<span>Mart</span></div>
+      <a href="/" class="back-btn">← Back to Home</a>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+      <h1>Project Developer</h1>
+    </div>
+
+    <!-- Contributors Grid -->
+    <div class="contributors-grid">
+
+     
+      <!-- Contributor 2 -->
+      <div class="card">
+        <div class="photo-wrap">
+          <img src="https://spiritual-yellow-7gezgj1gsy.edgeone.app/WhatsApp%20Image%202026-03-30%20at%201.58.51%20AM.jpeg" alt="Contributor Photo">
+        </div>
+        <centre>
+        <h3>HARSHIT PANT</h3>
+          </centre>
+        <div class="role">BACKEND DEVELOPER</div>
+        <div class="bio">
+          Designed clean, responsive and modern layouts to make FreshMart
+          intuitive and visually appealing.
+        </div>
+        <div class="skills">
+          <span class="tag">Figma</span>
+          <span class="tag">UI Design</span>
+          <span class="tag">Responsive</span>
+          <span class="tag">Django ORM</span>
+          <span class="tag">MYSQL</span>
+          <span class="tag">API</span>
+        </div>
+        <div class="socials">
+          <a href="#">Behance</a>
+          <a href="#">LinkedIn</a>
+        </div>
+    <div class="footer-note">
+      🌿 FreshMart is powered by teamwork, innovation, and clean design.
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+{% extends 'store/base.html' %}
+{% block title %}Add Variant — FreshMart{% endblock %}
+{% block content %}
+
+<div class="d-flex align-items-center gap-3 mb-2">
+  <a href="{% url 'store:home' %}" style="color:#6b7c6e;text-decoration:none;font-size:14px;"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+<div class="page-title">Add Product Variant</div>
+<div class="page-sub">Add a specific variant like Amul Full Cream Milk 500ml</div>
+
+<div class="card p-4" style="max-width:600px;">
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="row g-3">
+      <div class="col-12">
+        <label>Product</label>
+        {{ form.product }}
+        {% if form.product.errors %}<div style="color:#c0392b;font-size:12px;margin-top:4px;">{{ form.product.errors }}</div>{% endif %}
+      </div>
+
+      <div class="col-md-6">
+        <label>Brand <span style="color:#9aac9d;font-weight:400;">(optional)</span></label>
+        {{ form.brand }}
+      </div>
+
+      <div class="col-md-6">
+        <label>Variant Type <span style="color:#9aac9d;font-weight:400;">(optional)</span></label>
+        {{ form.variant_type }}
+      </div>
+
+      <div class="col-md-6">
+        <label>Quantity</label>
+        {{ form.quantity }}
+        {% if form.quantity.errors %}<div style="color:#c0392b;font-size:12px;margin-top:4px;">{{ form.quantity.errors }}</div>{% endif %}
+      </div>
+
+      <div class="col-md-6">
+        <label>Unit</label>
+        {{ form.unit }}
+        {% if form.unit.errors %}<div style="color:#c0392b;font-size:12px;margin-top:4px;">{{ form.unit.errors }}</div>{% endif %}
+      </div>
+
+      <div class="col-md-6">
+        <label>Selling Price (₹)</label>
+        {{ form.price }}
+        {% if form.price.errors %}<div style="color:#c0392b;font-size:12px;margin-top:4px;">{{ form.price.errors }}</div>{% endif %}
+      </div>
+
+      <div class="col-md-6">
+        <label>Cost Price (₹)</label>
+        {{ form.cost_price }}
+      </div>
+
+      <div class="col-md-6">
+        <label>Stock</label>
+        {{ form.stock }}
+      </div>
+
+      <div class="col-md-6">
+        <label>Min Stock Alert Level</label>
+        {{ form.min_stock_level }}
+      </div>
+
+      <div class="col-md-6">
+        <label>Expiry Date <span style="color:#9aac9d;font-weight:400;">(optional)</span></label>
+        {{ form.expiry_date }}
+      </div>
+
+      <!-- Profit preview -->
+      <div class="col-12">
+        <div class="alert-green" style="font-size:13px;">
+          <i class="bi bi-info-circle"></i>
+          <strong>Profit per unit</strong> = Selling Price − Cost Price
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn-green btn"><i class="bi bi-check-lg"></i> Save Variant</button>
+      <a href="{% url 'store:home' %}" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

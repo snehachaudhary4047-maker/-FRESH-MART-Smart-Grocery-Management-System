@@ -1,0 +1,445 @@
+{% extends 'store/base.html' %}
+{% block title %}DAA Project — FreshMart{% endblock %}
+
+{% block content %}
+
+<div class="page-title">🧮 Design & Analysis of Algorithms</div>
+<div class="page-sub">
+  Searching · Sorting · Knapsack — applied to fresh mart profit section
+</div>
+
+<!-- ── Algorithm Cards ── -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card p-4 text-center">
+      <div style="font-size:36px;margin-bottom:8px;">🔍</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--blue);">
+        Binary Search
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+        Time: O(log n) &nbsp;|&nbsp; Space: O(1)
+      </div>
+      <div style="font-size:12px;color:var(--muted);">
+        Search product in sorted list
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-4 text-center">
+      <div style="font-size:36px;margin-bottom:8px;">📊</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--blue);">
+        Merge Sort
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+        Time: O(n log n) &nbsp;|&nbsp; Space: O(n)
+      </div>
+      <div style="font-size:12px;color:var(--muted);">
+        Sort products by profit
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-4 text-center" style="border:2px solid var(--amber);">
+      <div style="font-size:36px;margin-bottom:8px;">🎒</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#b45309;">
+        0/1 Knapsack
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+        Time: O(n × W) &nbsp;|&nbsp; Space: O(n × W)
+      </div>
+      <div style="font-size:12px;color:var(--muted);">
+        Max profit within monthly budget
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      🔍 Algorithm 1 — Binary Search
+      <span style="font-size:11px;opacity:0.8;margin-left:8px;">
+        O(log n) — Search product in sorted list
+      </span>
+    </h6>
+  </div>
+  <div class="card-body p-4">
+
+    <!-- Search Form -->
+    <form method="GET">
+      <input type="hidden" name="budget" value="{{ budget }}"/>
+      <div class="d-flex gap-2 mb-3" style="max-width:500px;">
+        <input type="text" name="search"
+               value="{{ search_query }}"
+               class="form-control"
+               placeholder="Enter product name to search..."/>
+        <button type="submit" class="btn-green btn">
+          <i class="bi bi-search"></i> Search
+        </button>
+        {% if search_query %}
+        <a href="{% url 'store:daa' %}?budget={{ budget }}"
+           class="btn btn-outline-secondary">Clear</a>
+        {% endif %}
+      </div>
+    </form>
+
+    {% if search_query %}
+    <!-- Result -->
+    {% if search_result %}
+    <div class="alert-green mb-3">
+      <strong>✅ Found:</strong> {{ search_result.name }} —
+      Profit: ₹{{ search_result.profit }} |
+      Revenue: ₹{{ search_result.revenue }} |
+      Qty Sold: {{ search_result.qty }}
+      <span style="float:right;font-size:12px;">
+        ⏱️ Time: {{ search_time }} ms
+      </span>
+    </div>
+    {% else %}
+    <div style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;
+                border-radius:12px;padding:12px 16px;margin-bottom:12px;">
+      ❌ "{{ search_query }}" not found.
+      Searched {{ search_steps|length }} steps in {{ search_time }} ms
+    </div>
+    {% endif %}
+
+    <!-- Search Steps Table -->
+    {% if search_steps %}
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;">
+      Binary Search Steps:
+    </h6>
+    <table class="table mb-0" style="font-size:13px;">
+      <thead>
+        <tr style="background:#f0f5ff;">
+          <th style="padding:10px 14px;">Step</th>
+          <th>Low</th>
+          <th>Mid</th>
+          <th>High</th>
+          <th>Checked Value</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for step in search_steps %}
+        <tr>
+          <td style="padding:10px 14px;">{{ forloop.counter }}</td>
+          <td>{{ step.low }}</td>
+          <td><strong style="color:var(--blue);">{{ step.mid }}</strong></td>
+          <td>{{ step.high }}</td>
+          <td><strong>{{ step.checked }}</strong></td>
+          <td style="font-size:12px;color:var(--muted);">
+            {% if step.checked == search_query|lower %}
+              ✅ Match Found!
+            {% elif step.checked < search_query|lower %}
+              ➡️ Go Right
+            {% else %}
+              ⬅️ Go Left
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    {% endif %}
+
+    <!-- Sorted List for Binary Search -->
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:16px 0 8px;">
+      Sorted Product List (Input for Binary Search):
+    </h6>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      {% for p in sorted_for_search %}
+      <span style="background:#eff6ff;color:var(--blue);
+                   padding:4px 12px;border-radius:20px;font-size:12px;
+                   border:1px solid rgba(59,130,246,0.2);">
+        {{ forloop.counter }}. {{ p.name }}
+      </span>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      📊 Algorithm 2 — Merge Sort
+      <span style="font-size:11px;opacity:0.8;margin-left:8px;">
+        O(n log n) — Products sorted by profit (desc)
+        | ⏱️ {{ sort_time }} ms
+      </span>
+    </h6>
+  </div>
+  <div class="card-body p-0">
+
+    {% if chart_sort %}
+    <div class="p-3 text-center">
+      <img src="data:image/png;base64,{{ chart_sort }}"
+           style="max-width:100%;border-radius:12px;" alt="Sort Chart"/>
+    </div>
+    {% endif %}
+
+    <table class="table mb-0">
+      <thead>
+        <tr style="background:#f0f5ff;">
+          <th style="padding:12px 16px;">Rank</th>
+          <th>Product</th>
+          <th>Total Revenue</th>
+          <th>Total Profit</th>
+          <th>Qty Sold</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in sorted_products %}
+        <tr>
+          <td style="padding:12px 16px;">
+            {% if forloop.counter == 1 %}
+              <span style="font-size:18px;">🥇</span>
+            {% elif forloop.counter == 2 %}
+              <span style="font-size:18px;">🥈</span>
+            {% elif forloop.counter == 3 %}
+              <span style="font-size:18px;">🥉</span>
+            {% else %}
+              <strong style="color:var(--muted);">#{{ forloop.counter }}</strong>
+            {% endif %}
+          </td>
+          <td><strong>{{ p.name }}</strong></td>
+          <td style="color:var(--blue);font-weight:600;">
+            ₹{{ p.revenue|floatformat:2 }}
+          </td>
+          <td>
+            <span style="background:#fffbeb;color:#b45309;
+                         padding:4px 12px;border-radius:20px;
+                         font-weight:700;font-size:13px;">
+              ₹{{ p.profit|floatformat:2 }}
+            </span>
+          </td>
+          <td><span class="badge-green">{{ p.qty }}</span></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center;padding:24px;color:var(--muted);">
+            No data available
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="card mb-4">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      🎒 Algorithm 3 — 0/1 Knapsack
+      <span style="font-size:11px;opacity:0.8;margin-left:8px;">
+        O(n × W) — Max profit in 1 month budget
+        | ⏱️ {{ knapsack_time }} ms
+      </span>
+    </h6>
+  </div>
+  <div class="card-body p-4">
+
+    <!-- Budget Form -->
+    <form method="GET" class="mb-4">
+      <input type="hidden" name="search" value="{{ search_query }}"/>
+      <div class="row g-3 align-items-end" style="max-width:500px;">
+        <div class="col-md-8">
+          <label>Monthly Budget Constraint (₹)</label>
+          <input type="number" name="budget"
+                 value="{{ budget }}"
+                 class="form-control"
+                 placeholder="e.g. 5000"/>
+        </div>
+        <div class="col-md-4">
+          <button type="submit" class="btn-green btn w-100">
+            <i class="bi bi-calculator"></i> Calculate
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Knapsack Result -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;
+                    border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);
+                      text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+            Budget
+          </div>
+          <div style="font-family:'Syne',sans-serif;font-size:28px;
+                      font-weight:800;color:var(--blue);">
+            ₹{{ budget|floatformat:0 }}
+          </div>
+          <div style="font-size:12px;color:var(--muted);">monthly constraint</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div style="background:#fffbeb;border:1px solid #fde68a;
+                    border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);
+                      text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+            Max Profit
+          </div>
+          <div style="font-family:'Syne',sans-serif;font-size:28px;
+                      font-weight:800;color:#b45309;">
+            ₹{{ max_profit|floatformat:0 }}
+          </div>
+          <div style="font-size:12px;color:var(--muted);">optimal selection</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;
+                    border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);
+                      text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+            Items Selected
+          </div>
+          <div style="font-family:'Syne',sans-serif;font-size:28px;
+                      font-weight:800;color:#15803d;">
+            {{ selected|length }}
+          </div>
+          <div style="font-size:12px;color:var(--muted);">
+            out of {{ knapsack_products|length }} products
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Knapsack Chart -->
+    {% if chart_knapsack %}
+    <div class="text-center mb-4">
+      <img src="data:image/png;base64,{{ chart_knapsack }}"
+           style="max-width:100%;border-radius:12px;" alt="Knapsack Chart"/>
+    </div>
+    {% endif %}
+
+    <!-- Selected Items -->
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:12px;">
+      ✅ Knapsack Selected Items — Optimal Product Mix:
+    </h6>
+    <table class="table mb-0">
+      <thead>
+        <tr style="background:#f0f5ff;">
+          <th style="padding:12px 16px;">#</th>
+          <th>Product</th>
+          <th>Cost</th>
+          <th>Profit</th>
+          <th>Profit/Cost Ratio</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in selected %}
+        <tr style="background:rgba(239,246,255,0.5);">
+          <td style="padding:12px 16px;">✅</td>
+          <td><strong style="color:var(--blue);">{{ p.name }}</strong></td>
+          <td style="color:#dc2626;">₹{{ p.cost|floatformat:2 }}</td>
+          <td>
+            <span style="background:#fffbeb;color:#b45309;
+                         padding:4px 12px;border-radius:20px;
+                         font-weight:700;font-size:13px;">
+              ₹{{ p.profit|floatformat:2 }}
+            </span>
+          </td>
+          <td>
+            <span style="background:#eff6ff;color:var(--blue);
+                         padding:4px 12px;border-radius:20px;
+                         font-size:12px;font-weight:600;">
+              {{ p.profit|floatformat:2 }} / {{ p.cost|floatformat:2 }}
+            </span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center;padding:24px;color:var(--muted);">
+            No products fit in this budget
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+{% if chart_monthly %}
+<div class="card mb-4">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      📅 Max Profit Product Per Month
+    </h6>
+  </div>
+  <div class="card-body text-center p-3">
+    <img src="data:image/png;base64,{{ chart_monthly }}"
+         style="max-width:100%;border-radius:12px;" alt="Monthly Chart"/>
+  </div>
+</div>
+{% endif %}
+
+
+
+{% if chart_compare %}
+<div class="card mb-4">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      ⚡ Algorithm Complexity Comparison
+    </h6>
+  </div>
+  <div class="card-body text-center p-3">
+    <img src="data:image/png;base64,{{ chart_compare }}"
+         style="max-width:100%;border-radius:12px;" alt="Complexity Chart"/>
+  </div>
+</div>
+{% endif %}
+
+
+<div class="card">
+  <div class="card-header-green">
+    <h6 style="font-family:'Syne',sans-serif;font-weight:700;margin:0;">
+      📋 Algorithm Summary Table
+    </h6>
+  </div>
+  <div class="card-body p-0">
+    <table class="table mb-0">
+      <thead>
+        <tr style="background:#f0f5ff;">
+          <th style="padding:12px 16px;">Algorithm</th>
+          <th>Type</th>
+          <th>Time Complexity</th>
+          <th>Space Complexity</th>
+          <th>Applied To</th>
+          <th>Execution Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:12px 16px;"><strong>🔍 Binary Search</strong></td>
+          <td><span class="badge-green">Searching</span></td>
+          <td><strong style="color:var(--blue);">O(log n)</strong></td>
+          <td>O(1)</td>
+          <td>Find product by name</td>
+          <td>{{ search_time }} ms</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 16px;"><strong>📊 Merge Sort</strong></td>
+          <td><span class="badge-green">Sorting</span></td>
+          <td><strong style="color:var(--blue);">O(n log n)</strong></td>
+          <td>O(n)</td>
+          <td>Sort by profit desc</td>
+          <td>{{ sort_time }} ms</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 16px;"><strong>🎒 0/1 Knapsack</strong></td>
+          <td><span class="badge-amber">Dynamic Programming</span></td>
+          <td><strong style="color:#b45309;">O(n × W)</strong></td>
+          <td>O(n × W)</td>
+          <td>Max profit in budget</td>
+          <td>{{ knapsack_time }} ms</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
